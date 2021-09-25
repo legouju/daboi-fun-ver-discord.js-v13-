@@ -157,4 +157,4 @@ function insults() {
 //});
 
 })
-client.login('NTM2OTg4OTQ3NzIxNzQ4NDkx.XEYb7Q.xXQn94i3Q-xbBBObijsLdVk7giQ')
+client.login('')
