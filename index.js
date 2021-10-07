@@ -4,27 +4,73 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
-client.on('messageCreate', message => {
 
-  //prefix
-const prefix = "-";
-if (message.author.bot) return;
+//eval stuff
+function clean(text) {
+  if (typeof(text) === "string")
+    return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
+  else
+      return text;
+}
+
+
+//start of bot
+client.on('messageCreate', message => {
+//prefix
+  const prefix = "-t";
 //ignore itself
-//if(message.author.id !== 536988947721748491) return
-//if (message.author.client) return;
-//if (!message.content.startsWith(prefix)) return;
+if (message.author.bot) return;
+
+const ownerID = "526806117993545748";
+//server list
+  const args = message.content.split(" ").slice(1);
+
+  if (message.content.startsWith( prefix + "servers")) {
+    
+    if(message.author.id !== ownerID) return;
+    let serverlist = ''
+    message.channel.send("These are the servers I am in: \n")
+    client.guilds.cache.forEach((guild) => {
+        serverlist = serverlist.concat(" - " + guild.name + ": ID: " + guild.id + "\n")
+    })
+    message.channel.send(serverlist);
+  }
+
+  //eval
+  if (message.content.startsWith(prefix + "eval")) {
+    if(message.author.id !== ownerID) return;
+    try {
+      const code = args.join(" ");
+      let evaled = eval(code);
+
+      if (typeof evaled !== "string")
+        evaled = require("util").inspect(evaled);
+
+      message.channel.send(clean(evaled), {code:"xl"});
+    } catch (err) {
+      message.channel.send(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
+    }
+  }
+
+
+
+//ping
+if (message.content == prefix + 'ping') {
+  message.channel.send(`🏓Latency is ${Date.now() - message.createdTimestamp}ms. API Latency is ${Math.round(client.ws.ping)}ms`);
+  };
+
 
 //cmds
 var cmds = {
 	"advinfo": "fun ver for music bot (9/24/2021)",
 	"info": "fun ver for music bot \n -cmds for more fun commands \n -/ help for music bot commands \n \n Prefix: \n Fun ver: - \n Music bot: -/",
-	//"help": "whats your issue or dm <@442459978452697119>(-info for more info)",
+	"help": "whats your issue or dm <@442459978452697119>(-info for more info)",
 	"cmds": "current commands: -info -cmdns -ping -cointoss -8ball -insult -servers -advinfo",
-	//"betainfo": "if theres no date, beta ver is not running",
+	"betainfo": "if theres no date, beta ver is not running",
   "kill": "bot ded xdxdxdx",
-  //"-8ball": "test" + doMagic8BallVoodoo(),
- // "endgame":  "https://m.chinachenxi.com/play/76385-0-1.html \n \nSPOLIER: theres",
- // "shrek": "fyi full movie enjoy \nhttps://cdn.discordapp.com/attachments/358651360985743381/445510833989222400/Shrek.mp4",
+  "-8ball": "test" + doMagic8BallVoodoo(),
+  "endgame":  "https://m.chinachenxi.com/play/76385-0-1.html \n \nSPOLIER: theres",
+  "shrek": "fyi full movie enjoy \nhttps://cdn.discordapp.com/attachments/358651360985743381/445510833989222400/Shrek.mp4",
 };
 
 if (message.content.startsWith(prefix)) {
@@ -35,11 +81,6 @@ if (message.content.startsWith(prefix)) {
     }
   });
 }
-
-//ping
-if (message.content == prefix + 'ping') {
-  message.channel.send(`🏓Latency is ${Date.now() - message.createdTimestamp}ms. API Latency is ${Math.round(client.ws.ping)}ms`);
-  };
 
 //list servers
 if (message.content === prefix + 'servers'){
@@ -148,13 +189,6 @@ function insults() {
   return rand[Math.floor(Math.random()*rand.length)];
 }
 
-
-//client.guilds.cache.get('694926526445125712') // Grab the guild
-   // .leave() // Leave
-   // .then(g => console.log(`I left ${g}`)) // Give confirmation after leaving
-   // .catch(console.error);
-//
-//});
 
 })
 client.login('')
