@@ -82,16 +82,6 @@ if (message.content.startsWith(prefix)) {
   });
 }
 
-//list servers
-if (message.content === prefix + 'servers'){
-    let serverlist = ''
-    message.channel.send("These are the servers I am in: \n")
-    client.guilds.cache.forEach((guild) => {
-        serverlist = serverlist.concat(" - " + guild.name + ": ID: " + guild.id + "\n")
-    })
-    message.channel.send(serverlist);
-}
-
 //print avatar
 //if (message.content == prefix + "avatar") {
   //const user = message.mentions.users.first() || message.author;
